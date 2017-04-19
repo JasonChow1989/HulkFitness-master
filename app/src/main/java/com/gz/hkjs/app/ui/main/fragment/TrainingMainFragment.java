@@ -90,6 +90,7 @@ public class TrainingMainFragment extends BaseFragment<TrainingListPresenter, Tr
                         .centerCrop().override(1090, 1090 * 3 / 4)
                         .fitCenter()
                         .crossFade().into(img);
+
             }
         };
 

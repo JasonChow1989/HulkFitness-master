@@ -259,6 +259,13 @@ public class TimeUtil {
         return strDate;
     }
 
+    //获取系统当前时间
+    public  static String getSystemTime(String timeFormat){
+        SimpleDateFormat formatter = new SimpleDateFormat(timeFormat);
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        String str = formatter.format(curDate);
+        return str;
+    }
     /**
      * 描述：获取指定日期时间的字符串,用于导出想要的格式.
      *

@@ -20,7 +20,6 @@
     </declare-styleable>
 
 
-
     <!-- xy坐标轴颜色 -->
     <attr name="xylinecolor" format="color" />
     <!-- xy坐标轴宽度 -->
@@ -50,5 +49,8 @@
         <attr name="textbg"/>
         <attr name="isScroll" />
     </declare-styleable>
-
+    <declare-styleable name="CircleImageView">
+        <attr name="border_width" format="dimension" />
+        <attr name="border_color" format="color" />
+    </declare-styleable>
 </resources>
