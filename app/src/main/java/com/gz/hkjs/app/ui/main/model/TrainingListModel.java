@@ -2,6 +2,7 @@ package com.gz.hkjs.app.ui.main.model;
 
 import com.gz.hkjs.app.api.Api;
 import com.gz.hkjs.app.api.HostType;
+import com.gz.hkjs.app.bean.UserHomeData;
 import com.gz.hkjs.app.bean.VideoData;
 import com.gz.hkjs.app.ui.main.contract.TraningListContract;
 import com.jaydenxiao.common.baserx.RxSchedulers;
@@ -22,14 +23,14 @@ import rx.functions.Func2;
 public class TrainingListModel implements TraningListContract.Model {
 
     @Override
-    public Observable<List<VideoData.DataBean>> getVideosListData(HashMap<String, String> map) {
-        return Api.getDefault(HostType.NORMAL_HOSTTYPE).getVideoList(Api.getCacheControl(), map)
-                .map(new Func1<VideoData, List<VideoData.DataBean>>() {
+    public Observable<UserHomeData.DataBean> getUserHomeDataListData(HashMap<String, String> map) {
+        return Api.getDefault(HostType.NORMAL_HOSTTYPE)
+                .getHomeDataList(Api.getCacheControl(), map)
+                .map(new Func1<UserHomeData, UserHomeData.DataBean>() {
                     @Override
-                    public List<VideoData.DataBean> call(VideoData videoData) {
-                        return videoData.getData();
+                    public UserHomeData.DataBean call(UserHomeData userHomeData) {
+                        return userHomeData.getData();
                     }
-                })
-                .compose(RxSchedulers.<List<VideoData.DataBean>>io_main());
+                }).compose(RxSchedulers.<UserHomeData.DataBean>io_main());
     }
 }

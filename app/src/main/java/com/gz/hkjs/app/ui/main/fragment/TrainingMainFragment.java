@@ -5,12 +5,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aspsine.irecyclerview.IRecyclerView;
-import com.aspsine.irecyclerview.OnLoadMoreListener;
 import com.aspsine.irecyclerview.OnRefreshListener;
 import com.aspsine.irecyclerview.universaladapter.ViewHolderHelper;
 import com.aspsine.irecyclerview.universaladapter.recyclerview.CommonRecycleViewAdapter;
@@ -20,17 +19,17 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.gz.hkjs.app.R;
 import com.gz.hkjs.app.api.ApiConstants;
 import com.gz.hkjs.app.app.AppConstant;
-import com.gz.hkjs.app.bean.VideoData;
+import com.gz.hkjs.app.bean.UserHomeData;
+import com.gz.hkjs.app.ui.detail.activity.TrainingVideoDetailActivity;
 import com.gz.hkjs.app.ui.main.activity.AddTraningPlanActivity;
+import com.gz.hkjs.app.ui.main.activity.FinishTrainingActivity;
 import com.gz.hkjs.app.ui.main.activity.TrainDataChartViewActivity;
 import com.gz.hkjs.app.ui.main.contract.TraningListContract;
 import com.gz.hkjs.app.ui.main.model.TrainingListModel;
 import com.gz.hkjs.app.ui.main.presenter.TrainingListPresenter;
-import com.gz.hkjs.app.util.JMClassVedio;
+import com.gz.hkjs.app.util.JMClassUser;
 import com.jaydenxiao.common.base.BaseFragment;
 import com.jaydenxiao.common.commonwidget.LoadingTip;
-
-import java.util.List;
 
 import butterknife.Bind;
 
@@ -38,7 +37,7 @@ import butterknife.Bind;
  * Created by Administrator on 2017/3/15.
  */
 
-public class TrainingMainFragment extends BaseFragment<TrainingListPresenter, TrainingListModel> implements TraningListContract.View, OnRefreshListener, OnLoadMoreListener {
+public class TrainingMainFragment extends BaseFragment<TrainingListPresenter, TrainingListModel> implements TraningListContract.View, OnRefreshListener {
 
     @Bind(R.id.irc_traning)
     IRecyclerView ircTraning;
@@ -46,7 +45,7 @@ public class TrainingMainFragment extends BaseFragment<TrainingListPresenter, Tr
     LoadingTip loadedTip;
     @Bind(R.id.fab)
     FloatingActionButton fab;
-    CommonRecycleViewAdapter<VideoData.DataBean> traningListAdapter;
+    CommonRecycleViewAdapter<UserHomeData.DataBean.ListBean> traningListAdapter;
 
     @Bind(R.id.id_back)
     ImageView idBack;
@@ -54,7 +53,11 @@ public class TrainingMainFragment extends BaseFragment<TrainingListPresenter, Tr
     ImageView idTrainingToolbarTitle;
     @Bind(R.id.id_training_right_tv)
     ImageView idTrainingRightTv;
-    private int mStartPage = 1;
+
+    TextView idHomeDataLeiji;
+    TextView idHomeDataWancheng;
+    TextView idHomeDataLeijiDays;
+    TextView idHomeDataQianka;
 
     @Override
     protected int getLayoutResource() {
@@ -69,10 +72,11 @@ public class TrainingMainFragment extends BaseFragment<TrainingListPresenter, Tr
     @Override
     protected void initView() {
 
-        traningListAdapter = new CommonRecycleViewAdapter<VideoData.DataBean>(getContext(), R.layout.item_train_all_vedio) {
+        traningListAdapter = new CommonRecycleViewAdapter<UserHomeData.DataBean.ListBean>(getContext(), R.layout.item_train_all_vedio) {
             @Override
-            public void convert(ViewHolderHelper helper, VideoData.DataBean dataBean) {
-                ImageView img = helper.getView(R.id.item_train_all_img);
+            public void convert(ViewHolderHelper helper, final UserHomeData.DataBean.ListBean dataBean) {
+                FrameLayout fm = helper.getView(R.id.rl_root_train_all);
+                final ImageView img = helper.getView(R.id.item_train_all_img);
                 TextView title = helper.getView(R.id.item_train_all_title);
                 TextView time = helper.getView(R.id.item_train_all_time);
                 TextView energy = helper.getView(R.id.item_train_all_energy);
@@ -91,6 +95,13 @@ public class TrainingMainFragment extends BaseFragment<TrainingListPresenter, Tr
                         .fitCenter()
                         .crossFade().into(img);
 
+                fm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        TrainingVideoDetailActivity.startAction(getContext(), img, dataBean.getId(), dataBean.getLogo_url());
+                    }
+                });
+
             }
         };
 
@@ -98,10 +109,15 @@ public class TrainingMainFragment extends BaseFragment<TrainingListPresenter, Tr
         ircTraning.setLayoutManager(new LinearLayoutManager(getContext()));
         View head = LayoutInflater.from(getContext()).inflate(R.layout.layout_headerview_train, null);
         View foot = LayoutInflater.from(getContext()).inflate(R.layout.layout_footbutton_train, null);
+
+        idHomeDataLeiji = (TextView) head.findViewById(R.id.id_home_data_leiji);
+        idHomeDataWancheng = (TextView) head.findViewById(R.id.id_home_data_wancheng);
+        idHomeDataLeijiDays = (TextView) head.findViewById(R.id.id_home_data_leiji_days);
+        idHomeDataQianka = (TextView) head.findViewById(R.id.id_home_data_qianka);
+
         ircTraning.addHeaderView(head);
         ircTraning.addFooterView(foot);
         ircTraning.setOnRefreshListener(this);
-        ircTraning.setOnLoadMoreListener(this);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,14 +137,20 @@ public class TrainingMainFragment extends BaseFragment<TrainingListPresenter, Tr
         //数据为空才重新发起请求
         if (traningListAdapter.getSize() <= 0) {
             //发起请求
-            mStartPage = 1;
-            mPresenter.getVideosListDataRequest(JMClassVedio.MyJMClass(AppConstant.OS, String.valueOf(mStartPage), AppConstant.VERSION_NUM, "1", ApiConstants.API_VEDIO_LIST));
+            mPresenter.getUserHomeDataRequest(JMClassUser.MyJMClass("13", AppConstant.OS, AppConstant.VERSION_NUM, ApiConstants.API_VEDIO_LIST));
         }
 
         idBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TrainDataChartViewActivity.startAction(getContext());
+            }
+        });
+
+        idTrainingRightTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FinishTrainingActivity.startAction(getActivity());
             }
         });
     }
@@ -140,18 +162,9 @@ public class TrainingMainFragment extends BaseFragment<TrainingListPresenter, Tr
 
     @Override
     public void onRefresh() {
-        mStartPage = 1;
         //发起请求
         ircTraning.setRefreshing(true);
-        mPresenter.getVideosListDataRequest(JMClassVedio.MyJMClass(AppConstant.OS, String.valueOf(mStartPage), AppConstant.VERSION_NUM, "1", ApiConstants.API_VEDIO_LIST));
-    }
-
-    @Override
-    public void onLoadMore(View loadMoreView) {
-        traningListAdapter.getPageBean().setRefresh(false);
-        //发起请求
-        ircTraning.setLoadMoreStatus(LoadMoreFooterView.Status.LOADING);
-        mPresenter.getVideosListDataRequest(JMClassVedio.MyJMClass(AppConstant.OS, String.valueOf(mStartPage), AppConstant.VERSION_NUM, "1", ApiConstants.API_VEDIO_LIST));
+        mPresenter.getUserHomeDataRequest(JMClassUser.MyJMClass("13", AppConstant.OS, AppConstant.VERSION_NUM, ApiConstants.API_VEDIO_LIST));
     }
 
     @Override
@@ -174,16 +187,22 @@ public class TrainingMainFragment extends BaseFragment<TrainingListPresenter, Tr
     }
 
     @Override
-    public void returnVideosListData(List<VideoData.DataBean> videoDatas) {
-        if (videoDatas != null) {
-            mStartPage += 1;
+    public void returnUserHomeDataListData(UserHomeData.DataBean homeDataSummaries) {
+        if (homeDataSummaries != null) {
+            System.out.println("--------homeDataSummaries.getTimes--------:" + homeDataSummaries.getTimes());
+
+            idHomeDataLeiji.setText(homeDataSummaries.getTimes());
+            idHomeDataWancheng.setText(homeDataSummaries.getNum());
+            idHomeDataLeijiDays.setText(homeDataSummaries.getDay());
+            idHomeDataQianka.setText(homeDataSummaries.getEnergy());
+
             if (traningListAdapter.getPageBean().isRefresh()) {
                 ircTraning.setRefreshing(false);
-                traningListAdapter.replaceAll(videoDatas);
+                traningListAdapter.replaceAll(homeDataSummaries.getList());
             } else {
-                if (videoDatas.size() > 0) {
+                if (homeDataSummaries.getList().size() > 0) {
                     ircTraning.setLoadMoreStatus(LoadMoreFooterView.Status.GONE);
-                    traningListAdapter.addAll(videoDatas);
+                    traningListAdapter.addAll(homeDataSummaries.getList());
                 } else {
                     ircTraning.setLoadMoreStatus(LoadMoreFooterView.Status.THE_END);
                 }
@@ -195,5 +214,4 @@ public class TrainingMainFragment extends BaseFragment<TrainingListPresenter, Tr
     public void scrolltoTop() {
         ircTraning.smoothScrollToPosition(0);
     }
-
 }

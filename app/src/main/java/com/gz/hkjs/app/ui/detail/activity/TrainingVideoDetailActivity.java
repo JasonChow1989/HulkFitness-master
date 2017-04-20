@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.gz.hkjs.app.ui.detail.model.TrainVedioDetailModel;
 import com.gz.hkjs.app.ui.detail.presenter.TrainVedioDetailPresenter;
 import com.gz.hkjs.app.util.JMClassDetail;
 import com.jaydenxiao.common.base.BaseActivity;
+import com.jaydenxiao.common.commonwidget.StatusBarCompat;
 
 import java.util.List;
 
@@ -69,6 +71,28 @@ public class TrainingVideoDetailActivity extends BaseActivity<TrainVedioDetailPr
                     .makeScaleUpAnimation(view, view.getWidth() / 2, view.getHeight() / 2, 0, 0);
             ActivityCompat.startActivity((Activity) mContext, intent, options.toBundle());
         }
+    }
+
+
+    /**
+     * 着色状态栏（4.4以上系统有效）
+     */
+    protected void SetStatusBarColor() {
+        StatusBarCompat.setStatusBarColor(this, ContextCompat.getColor(this, R.color.alpha_50_white ));
+    }
+
+    /**
+     * 着色状态栏（4.4以上系统有效）
+     */
+    protected void SetStatusBarColor(int color) {
+        StatusBarCompat.setStatusBarColor(this, color);
+    }
+
+    /**
+     * 沉浸状态栏（4.4以上系统有效）
+     */
+    protected void SetTranslanteBar() {
+        StatusBarCompat.translucentStatusBar(this);
     }
 
     @Override

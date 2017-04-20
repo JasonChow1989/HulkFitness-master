@@ -29,6 +29,7 @@ public class ApiConstants {
     public static final String API_VEDIO_LIST = ENDDETAIL_URL + "Lists.Get";
     public static final String API_Choose_LIST = ENDDETAIL_URL + "Lists.Screen";
     public static final String API_TRAIN_VEDIO_DETAIL_LIST = ENDDETAIL_URL + "Lists.Detail";
+    public static final String API_USER_HOME_DATA = ENDDETAIL_URL + "Homes.Get";
 
 
     /**

@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:name=".app.AppApplication"
@@ -42,14 +42,13 @@
         <activity android:name=".ui.main.activity.TrainingDataActivity" />
         <activity android:name=".ui.detail.activity.TrainingVideoDetailActivity" />
         <activity android:name=".ui.main.activity.TrainDataChartViewActivity" />
-=======
-        <activity android:name=".ui.main.activity.PasswordActivity"/>
+        <activity android:name=".ui.main.activity.PasswordActivity" />
         <activity android:name=".ui.main.activity.FeedbackActivity" />
-        <activity android:name=".ui.main.activity.InformationActivity"/>
-        <activity android:name=".ui.main.activity.CollectActivity"/>
-        <activity android:name=".ui.main.activity.AccountActivity"/>
+        <activity android:name=".ui.main.activity.InformationActivity" />
+        <activity android:name=".ui.main.activity.CollectActivity" />
+        <activity android:name=".ui.main.activity.AccountActivity" />
         <activity android:name=".ui.main.activity.PhoneActivity" />
->>>>>>> .r676
+        <activity android:name=".ui.main.activity.FinishTrainingActivity" />
     </application>
 
 </manifest>

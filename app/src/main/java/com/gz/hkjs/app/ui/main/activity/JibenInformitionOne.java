@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 
 import com.gz.hkjs.app.R;
 import com.gz.hkjs.app.util.CacheActivity;
@@ -13,6 +16,7 @@ import com.jaydenxiao.common.base.BaseActivity;
 import com.jaydenxiao.common.commonwidget.StatusBarCompat;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
  * Created by Administrator on 2017/4/13.
@@ -23,6 +27,18 @@ public class JibenInformitionOne extends BaseActivity {
 
     @Bind(R.id.button_jinen_1)
     Button button1;
+    @Bind(R.id.id_jiben1_cb1)
+    CheckBox idJiben1Cb1;
+    @Bind(R.id.id_jiben1_rl1)
+    RelativeLayout idJiben1Rl1;
+    @Bind(R.id.id_jiben1_cb2)
+    CheckBox idJiben1Cb2;
+    @Bind(R.id.id_jiben1_rl2)
+    RelativeLayout idJiben1Rl2;
+    @Bind(R.id.id_jiben1_cb3)
+    CheckBox idJiben1Cb3;
+    @Bind(R.id.id_jiben1_rl3)
+    RelativeLayout idJiben1Rl3;
 
     /**
      * 入口
@@ -83,6 +99,27 @@ public class JibenInformitionOne extends BaseActivity {
                 JibenInformitionTwo.startAction(JibenInformitionOne.this);
             }
         });
+
     }
 
+    @OnClick({R.id.id_jiben1_rl1, R.id.id_jiben1_rl2, R.id.id_jiben1_rl3})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.id_jiben1_rl1:
+                idJiben1Cb1.setBackgroundResource(R.mipmap.me_information_btn_selected);
+                idJiben1Cb2.setBackgroundResource(R.mipmap.me_information_btn_unselected);
+                idJiben1Cb3.setBackgroundResource(R.mipmap.me_information_btn_unselected);
+                break;
+            case R.id.id_jiben1_rl2:
+                idJiben1Cb2.setBackgroundResource(R.mipmap.me_information_btn_selected);
+                idJiben1Cb1.setBackgroundResource(R.mipmap.me_information_btn_unselected);
+                idJiben1Cb3.setBackgroundResource(R.mipmap.me_information_btn_unselected);
+                break;
+            case R.id.id_jiben1_rl3:
+                idJiben1Cb3.setBackgroundResource(R.mipmap.me_information_btn_selected);
+                idJiben1Cb2.setBackgroundResource(R.mipmap.me_information_btn_unselected);
+                idJiben1Cb1.setBackgroundResource(R.mipmap.me_information_btn_unselected);
+                break;
+        }
+    }
 }

@@ -40,7 +40,7 @@ public class AccountActivity extends BaseActivity {
     LinearLayout llAccountTop;
     @Bind(R.id.tv_account_version)
     TextView tvAccountVersion;
-    private String phone="";
+    private String phone = "";
 
     @Override
     public int getLayoutId() {
@@ -91,10 +91,10 @@ public class AccountActivity extends BaseActivity {
             case R.id.mtb_account:
                 break;
             case R.id.bt_change_phone:
-                startActivity(new Intent(this,PhoneActivity.class));
+                startActivity(new Intent(this, PhoneActivity.class));
                 break;
             case R.id.bt_change_password:
-                startActivity(new Intent(this,PasswordActivity.class));
+                startActivity(new Intent(this, PasswordActivity.class));
                 break;
             case R.id.tv_phone_exit_login:
                 break;

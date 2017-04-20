@@ -6,6 +6,7 @@ import com.gz.hkjs.app.bean.FindSummary;
 import com.gz.hkjs.app.bean.RecipesDetail;
 import com.gz.hkjs.app.bean.RecipesSummary;
 import com.gz.hkjs.app.bean.TrainVedioDetail;
+import com.gz.hkjs.app.bean.UserHomeData;
 import com.gz.hkjs.app.bean.Version;
 import com.gz.hkjs.app.bean.VideoData;
 
@@ -27,6 +28,7 @@ import static com.gz.hkjs.app.api.ApiConstants.API_FIND_LIST;
 import static com.gz.hkjs.app.api.ApiConstants.API_RECIPES_DETAIL;
 import static com.gz.hkjs.app.api.ApiConstants.API_RECIPES_LIST;
 import static com.gz.hkjs.app.api.ApiConstants.API_TRAIN_VEDIO_DETAIL_LIST;
+import static com.gz.hkjs.app.api.ApiConstants.API_USER_HOME_DATA;
 import static com.gz.hkjs.app.api.ApiConstants.API_VEDIO_LIST;
 import static com.gz.hkjs.app.api.ApiConstants.API_VERSION;
 
@@ -64,6 +66,12 @@ public interface ApiService {
     @FormUrlEncoded
     @POST(API_VERSION)
     Observable<Version> getVersionData(
+            @Header("Cache-Control") String cacheControl,
+            @FieldMap HashMap<String, String> map);
+
+    @FormUrlEncoded
+    @POST(API_USER_HOME_DATA)
+    Observable<UserHomeData> getHomeDataList(
             @Header("Cache-Control") String cacheControl,
             @FieldMap HashMap<String, String> map);
 

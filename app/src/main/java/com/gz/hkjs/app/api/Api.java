@@ -30,8 +30,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by xsf
  * on 2016.06.15:47
  */
-public class Api
-{
+public class Api {
     //读超时长，单位：毫秒
     public static final int READ_TIME_OUT = 7676;
     //连接时长，单位：毫秒
@@ -76,8 +75,7 @@ public class Api
 
 
     //构造方法私有
-    private Api(int hostType)
-    {
+    private Api(int hostType) {
         //开启Log
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -85,11 +83,9 @@ public class Api
         File cacheFile = new File(BaseApplication.getAppContext().getCacheDir(), "cache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
         //增加头部信息
-        Interceptor headerInterceptor = new Interceptor()
-        {
+        Interceptor headerInterceptor = new Interceptor() {
             @Override
-            public Response intercept(Chain chain) throws IOException
-            {
+            public Response intercept(Chain chain) throws IOException {
                 Request build = chain.request().newBuilder()
                         .addHeader("Content-Type", "application/json")
                         .build();
@@ -121,11 +117,9 @@ public class Api
     /**
      * @param hostType
      */
-    public static ApiService getDefault(int hostType)
-    {
+    public static ApiService getDefault(int hostType) {
         Api retrofitManager = sRetrofitManager.get(hostType);
-        if (retrofitManager == null)
-        {
+        if (retrofitManager == null) {
             retrofitManager = new Api(hostType);
             sRetrofitManager.put(hostType, retrofitManager);
         }
@@ -137,8 +131,7 @@ public class Api
      * 根据网络状况获取缓存的策略
      */
     @NonNull
-    public static String getCacheControl()
-    {
+    public static String getCacheControl() {
         return NetWorkUtils.isNetConnected(BaseApplication.getAppContext()) ? CACHE_CONTROL_AGE : CACHE_CONTROL_CACHE;
     }
 
@@ -146,29 +139,24 @@ public class Api
      * 云端响应头拦截器，用来配置缓存策略
      * Dangerous interceptor that rewrites the server's cache-control header.
      */
-    private final Interceptor mRewriteCacheControlInterceptor = new Interceptor()
-    {
+    private final Interceptor mRewriteCacheControlInterceptor = new Interceptor() {
         @Override
-        public Response intercept(Chain chain) throws IOException
-        {
+        public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
             String cacheControl = request.cacheControl().toString();
-            if (!NetWorkUtils.isNetConnected(BaseApplication.getAppContext()))
-            {
+            if (!NetWorkUtils.isNetConnected(BaseApplication.getAppContext())) {
                 request = request.newBuilder()
                         .cacheControl(TextUtils.isEmpty(cacheControl) ? CacheControl.FORCE_NETWORK : CacheControl.FORCE_CACHE)
                         .build();
             }
             Response originalResponse = chain.proceed(request);
-            if (NetWorkUtils.isNetConnected(BaseApplication.getAppContext()))
-            {
+            if (NetWorkUtils.isNetConnected(BaseApplication.getAppContext())) {
                 //有网的时候读接口上的@Headers里的配置，你可以在这里进行统一的设置
                 return originalResponse.newBuilder()
                         .header("Cache-Control", cacheControl)
                         .removeHeader("Pragma")
                         .build();
-            } else
-            {
+            } else {
                 return originalResponse.newBuilder()
                         .header("Cache-Control", "public, only-if-cached, max-stale=" + CACHE_STALE_SEC)
                         .removeHeader("Pragma")

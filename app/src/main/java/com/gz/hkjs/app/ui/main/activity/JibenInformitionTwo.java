@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.RelativeLayout;
 
 import com.gz.hkjs.app.R;
 import com.gz.hkjs.app.util.CacheActivity;
@@ -13,6 +15,7 @@ import com.jaydenxiao.common.base.BaseActivity;
 import com.jaydenxiao.common.commonwidget.StatusBarCompat;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
  * Created by Administrator on 2017/4/13.
@@ -23,6 +26,18 @@ public class JibenInformitionTwo extends BaseActivity {
 
     @Bind(R.id.button_jinen_2)
     Button buttonJinen2;
+    @Bind(R.id.id_jiben2_cb1)
+    CheckBox idJiben2Cb1;
+    @Bind(R.id.id_jiben2_rl1)
+    RelativeLayout idJiben2Rl1;
+    @Bind(R.id.id_jiben2_cb2)
+    CheckBox idJiben2Cb2;
+    @Bind(R.id.id_jiben2_rl2)
+    RelativeLayout idJiben2Rl2;
+    @Bind(R.id.id_jiben2_cb3)
+    CheckBox idJiben2Cb3;
+    @Bind(R.id.id_jiben2_rl3)
+    RelativeLayout idJiben2Rl3;
 
     /**
      * 入口
@@ -39,19 +54,21 @@ public class JibenInformitionTwo extends BaseActivity {
     /**
      * 着色状态栏（4.4以上系统有效）
      */
-    protected void SetStatusBarColor(){
+    protected void SetStatusBarColor() {
         StatusBarCompat.setStatusBarColor(this, ContextCompat.getColor(this, R.color.start_color));
     }
+
     /**
      * 着色状态栏（4.4以上系统有效）
      */
-    protected void SetStatusBarColor(int color){
-        StatusBarCompat.setStatusBarColor(this,color);
+    protected void SetStatusBarColor(int color) {
+        StatusBarCompat.setStatusBarColor(this, color);
     }
+
     /**
      * 沉浸状态栏（4.4以上系统有效）
      */
-    protected void SetTranslanteBar(){
+    protected void SetTranslanteBar() {
         StatusBarCompat.translucentStatusBar(this);
     }
 
@@ -83,4 +100,24 @@ public class JibenInformitionTwo extends BaseActivity {
         });
     }
 
+    @OnClick({R.id.id_jiben2_rl1, R.id.id_jiben2_rl2, R.id.id_jiben2_rl3})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.id_jiben2_rl1:
+                idJiben2Cb1.setBackgroundResource(R.mipmap.me_information_btn_selected);
+                idJiben2Cb2.setBackgroundResource(R.mipmap.me_information_btn_unselected);
+                idJiben2Cb3.setBackgroundResource(R.mipmap.me_information_btn_unselected);
+                break;
+            case R.id.id_jiben2_rl2:
+                idJiben2Cb2.setBackgroundResource(R.mipmap.me_information_btn_selected);
+                idJiben2Cb1.setBackgroundResource(R.mipmap.me_information_btn_unselected);
+                idJiben2Cb3.setBackgroundResource(R.mipmap.me_information_btn_unselected);
+                break;
+            case R.id.id_jiben2_rl3:
+                idJiben2Cb3.setBackgroundResource(R.mipmap.me_information_btn_selected);
+                idJiben2Cb2.setBackgroundResource(R.mipmap.me_information_btn_unselected);
+                idJiben2Cb1.setBackgroundResource(R.mipmap.me_information_btn_unselected);
+                break;
+        }
+    }
 }

@@ -2,6 +2,7 @@ package com.gz.hkjs.app.ui.main.presenter;
 
 import com.gz.hkjs.app.R;
 import com.gz.hkjs.app.app.AppConstant;
+import com.gz.hkjs.app.bean.UserHomeData;
 import com.gz.hkjs.app.bean.VideoData;
 import com.gz.hkjs.app.ui.main.contract.TraningListContract;
 import com.jaydenxiao.common.baserx.RxSubscriber;
@@ -29,9 +30,10 @@ public class TrainingListPresenter extends TraningListContract.Presenter {
         });
     }
 
+
     @Override
-    public void getVideosListDataRequest(HashMap<String, String> map) {
-        mRxManage.add(mModel.getVideosListData(map).subscribe(new RxSubscriber<List<VideoData.DataBean>>(mContext, false) {
+    public void getUserHomeDataRequest(HashMap<String, String> map) {
+        mRxManage.add(mModel.getUserHomeDataListData(map).subscribe(new RxSubscriber<UserHomeData.DataBean>(mContext, false) {
             @Override
             public void onStart() {
                 super.onStart();
@@ -39,8 +41,8 @@ public class TrainingListPresenter extends TraningListContract.Presenter {
             }
 
             @Override
-            protected void _onNext(List<VideoData.DataBean> videoDatas) {
-                mView.returnVideosListData(videoDatas);
+            protected void _onNext(UserHomeData.DataBean videoDatas) {
+                mView.returnUserHomeDataListData(videoDatas);
                 mView.stopLoading();
             }
 

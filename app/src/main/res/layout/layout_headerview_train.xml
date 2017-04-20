@@ -18,6 +18,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/id_home_data_leiji"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -51,6 +52,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/id_home_data_wancheng"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -77,6 +79,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/id_home_data_leiji_days"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -103,6 +106,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/id_home_data_qianka"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"

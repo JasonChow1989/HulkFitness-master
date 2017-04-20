@@ -1,19 +1,27 @@
 package com.gz.hkjs.app.ui.main.activity;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.sdk.android.oss.ClientException;
+import com.alibaba.sdk.android.oss.ServiceException;
+import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
+import com.alibaba.sdk.android.oss.callback.OSSProgressCallback;
+import com.alibaba.sdk.android.oss.model.PutObjectRequest;
+import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.gz.hkjs.app.R;
+import com.gz.hkjs.app.app.AppApplication;
 import com.gz.hkjs.app.util.XUtilNet;
 import com.gz.hkjs.app.util.permission.PermissionCallBack;
 import com.gz.hkjs.app.util.permission.PermissionUtil;
@@ -23,8 +31,9 @@ import com.jaydenxiao.common.base.BaseActivity;
 import com.jaydenxiao.common.commonutils.ToastUitl;
 import com.jaydenxiao.common.commonwidget.MineTitleBar;
 import com.orhanobut.logger.Logger;
-
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -57,10 +66,12 @@ public class FeedbackActivity extends BaseActivity {
     //Data
     private Intent intent;
     private String photoSaveName = "temp_photo.jpg";//照片的名字
-    private String photoSavePath;//保存路径
+    //    private String photoSavePath;//保存路径
     private File imageFile;
     private String feedbackContent = "";//反馈内容
     private String feedbackContactWay = "";//联系方式
+    protected Handler mHandler = new Handler();
+    private String mUploadFilePath = "/storage/emulated/0/DCIM/Camera/IMG_20150701_104558.jpg";
 
     @Override
     public int getLayoutId() {
@@ -106,7 +117,7 @@ public class FeedbackActivity extends BaseActivity {
                     ToastUitl.showShort("输入不能为空");
                 } else {
                     if (XUtilNet.isNetConnected()) {
-                        feedBackData();
+                        upLoadImage(mUploadFilePath);
                     } else {
                         ToastUitl.showShort("请检查网络连接");
                     }
@@ -201,8 +212,88 @@ public class FeedbackActivity extends BaseActivity {
      * 反馈的数据
      */
     private void feedBackData() {
+        //如果有图片先传图片
+//        if (imageFile != null) {
+//            upLoadImage();
+//        } else {
+//            feedBack();
+//        }
+    }
+
+    private void feedBack() {
 
     }
+
+
+    private void upLoadImage(String uploadFilePath) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                ToastUitl.showShort("上传中，请等待");
+            }
+        });
+        PutObjectRequest put = new PutObjectRequest(AppApplication.OSS_BUCKET, mUploadFilePath + "/" + getImageObjectKey("123456789"), uploadFilePath);
+        put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
+            @Override
+            public void onProgress(PutObjectRequest request, long currentSize, long totalSize) {
+                Logger.i("PutObject", "currentSize: " + currentSize + " totalSize: " + totalSize);
+
+            }
+        });
+        AppApplication.oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
+            @Override
+            public void onSuccess(final PutObjectRequest request, PutObjectResult result) {
+                Logger.i("PutObject", "UploadSuccess");
+                Logger.i("ETag", result.getETag());
+                Logger.i("RequestId", result.getRequestId());
+                //将上传成功的图片地址传给自己的服务器后台，比如修改用户数据库中，用户头像的url。
+                //修改后台url成功后，再利用glide 下载最新的照片，修改本地头像图片。
+                //request.getObjectKey() 是图片地址，但是不包含，OSS 图片域名
+              uploadImage(request.getObjectKey());
+            }
+
+            @Override
+            public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //如果上传失败了，通过mHandler ，发出失败的消息到主线程中。处理异常。
+//                          showNetErrorInfo();
+                    }
+                });
+                // 请求异常
+                if (clientExcepion != null) {
+                    // 本地异常如网络异常等
+                    clientExcepion.printStackTrace();
+                }
+                if (serviceException != null) {
+                    // 服务异常
+                    Log.e("ErrorCode", serviceException.getErrorCode());
+                    Log.e("RequestId", serviceException.getRequestId());
+                    Log.e("HostId", serviceException.getHostId());
+                    Log.e("RawMessage", serviceException.getRawMessage());
+                }
+
+            }
+        });
+    }
+
+    protected void uploadImage(String objectKey) {
+//        String url=Http
+
+    }
+
+    /**
+     * 通过创建照片的时间来命名照片
+     */
+
+    private String getImageObjectKey(String strUserCode) {
+
+        Date date = new Date();
+        return new SimpleDateFormat("yyyy/M/d").format(date) + "/" + strUserCode + new SimpleDateFormat("yyyyMMddssSSS").format(date) + ".jpg";
+
+    }
+
 
     /**
      * 图片选择或拍照结果
@@ -224,6 +315,9 @@ public class FeedbackActivity extends BaseActivity {
                 if (data != null) {
                     // 得到图片的全路径
                     Uri uri = data.getData();
+
+                    System.out.println("----------uri.getPath()---------:" + uri.getPath());
+
                     crop(uri);
                 }
                 break;
@@ -250,4 +344,5 @@ public class FeedbackActivity extends BaseActivity {
             }
         }
     }
+
 }
