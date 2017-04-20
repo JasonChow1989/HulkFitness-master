@@ -1,5 +1,4 @@
 include ':app'
 include ':library:common'
 include ':library:irecyclerview'
-include ':library:SuperTextViewLibrary'
 include ':library:ruler_lib'
