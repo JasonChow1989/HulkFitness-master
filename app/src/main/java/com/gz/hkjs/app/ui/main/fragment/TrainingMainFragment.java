@@ -101,7 +101,6 @@ public class TrainingMainFragment extends BaseFragment<TrainingListPresenter, Tr
                         TrainingVideoDetailActivity.startAction(getContext(), img, dataBean.getId(), dataBean.getLogo_url());
                     }
                 });
-
             }
         };
 

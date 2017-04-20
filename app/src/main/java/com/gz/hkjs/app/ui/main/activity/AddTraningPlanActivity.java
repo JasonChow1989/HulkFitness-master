@@ -59,7 +59,6 @@ public class AddTraningPlanActivity extends BaseActivity<AddTrainingPlanPresente
 
     /**
      * 入口
-     *
      * @param mContext
      */
     public static void startAction(Context mContext) {
